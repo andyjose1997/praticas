@@ -1,71 +1,29 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tradutores</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <title>Visualizador do Google Docs</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        iframe {
+            width: 90%;
+            height: 95vh;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+    </style>
 </head>
 <body>
 
-  <header id="topo">
-    <h1>CTM</h1>
-    <h2>Centro De Treinamento</h2>
-    <h4>São Paulo</h4>
-  </header>
-  
-  <div id="tudo">
+<iframe src="https://docs.google.com/document/d/1Iu8_mUkyfSyUUV9BLDNmofqBEP49Q9tnFNX7JvwrFRo/preview"></iframe>
 
-  <div id="buscarEscritura-container">
-    <h1 id="buscarEscritura-titulo">Buscar Escritura SUD</h1>
-
-    <label for="buscarEscritura-livro">Nome do livro:</label>
-    <input id="buscarEscritura-livro" list="buscarEscritura-listaLivros" placeholder="Digite o nome do livro..." autocomplete="off"/>
-    <datalist id="buscarEscritura-listaLivros"></datalist>
-
-    <label for="buscarEscritura-capitulo">Capítulo:</label>
-    <input id="buscarEscritura-capitulo" placeholder="Ex: 1" />
-
-    <label for="buscarEscritura-versiculo">Versículo:</label>
-    <input id="buscarEscritura-versiculo" placeholder="Ex: 14" />
-
-    <label for="buscarEscritura-idioma">Idioma:</label>
-    <select id="buscarEscritura-idioma">
-      <option value="por">Português</option>
-      <option value="eng">Inglês</option>
-      <option value="spa">Espanhol</option>
-      <option value="fra">Francês</option>
-      <option value="jpn">Japonês</option>
-    </select>
-
-    <button id="buscarEscritura-botao"><span class="texto-botao">Ir para Escritura</span></button>
-  </div>
-
-  <!-- Caixa de idiomas/frases -->
- <div id="frase-container">
-  <div id="idiomas-botoes">
-    <div>
-      <button id="copiar-btn">📋 Copiar texto</button></div>
-<br> <br><div>
-    <button data-idioma="por">🇧🇷 Português</button>
-    <button data-idioma="eng">🇺🇸 English</button>
-    <button data-idioma="spa">🇪🇸 Español</button>
-    <button data-idioma="fra">🇫🇷 Français</button>
-    <button data-idioma="ita">🇮🇹 Italiano</button>
-    <button data-idioma="jpn">🇯🇵 日本語</button>
-    <button data-idioma="kor">🇰🇷 한국어</button>
-  </div></div>
-
-  <div id="frases-traduzidas"></div>
-
-</div>
-
-
-  </div>
-
-
-
-  <script src="script.js"></script>
 </body>
 </html>
-''
