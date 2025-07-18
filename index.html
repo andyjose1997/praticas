@@ -237,13 +237,11 @@
         audio.play();
     }
 
-    function fecharModal() {
-        document.getElementById('modal').style.display = 'none';
+    // Faz o modal fechar ao clicar em qualquer lugar fora da caixa vermelha
+function fecharModal() {
+    location.reload(true);
+}
 
-        const audio = document.getElementById('alarme');
-        audio.pause();
-        audio.currentTime = 0;
-    }
 </script>
 
 </body>
