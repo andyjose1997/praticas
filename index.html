@@ -241,6 +241,13 @@
 function fecharModal() {
     location.reload(true);
 }
+function recarregarIframe() {
+        const iframe = document.getElementById('doc');
+        iframe.src = iframe.src;  // Recarrega apenas o iframe
+    }
+
+    // Recarrega o iframe a cada 60 segundos (60000 ms)
+    setInterval(recarregarIframe, 60000);
 
 </script>
 
