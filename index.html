@@ -6,24 +6,245 @@
     <style>
         body {
             margin: 0;
-            background-color: #f0f0f0;
+            background-color: #0713f9;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #f0f0f0;
+        }
+
+        header {
+            width: 100%;
+            background-color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            padding: 15px 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
+
+        #hora {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .botoes {
+            margin: 10px 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
         iframe {
             width: 90%;
-            height: 95vh;
+            height: 85vh;
             border: none;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .temporizador {
+            margin: 10px;
+            text-align: center;
+        }
+
+        input[type="number"] {
+            width: 80px;
+            padding: 5px;
+            font-size: 14px;
+            margin: 0 5px;
+            border-radius: 20px;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background-color: red;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            max-width: 90%;
+        }
+
+        .modal-content button {
+            margin-top: 20px;
+            background-color: #ffffff;
+            color: red;
+            font-weight: bold;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal-content button:hover {
+            background-color: #f0f0f0;
         }
     </style>
 </head>
 <body>
 
-<iframe src="https://docs.google.com/document/d/1Iu8_mUkyfSyUUV9BLDNmofqBEP49Q9tnFNX7JvwrFRo/preview"></iframe>
+<h1>CTM</h1> 
+<h2>Subs</h2>
+<div id="hora">--:--:--</div>
+
+<div class="botoes">
+    <button onclick="window.open('https://docs.google.com/spreadsheets/d/1jgK3SQq9AVC5EMW5jo22jpLmvZdw1TcLX-Rs8Ruh0b8/edit?usp=sharing', '_blank')">Práticas</button>
+    <button onclick="window.open('https://docs.google.com/spreadsheets/d/1tKd3xoUjQL6f3z7RX9PpvNNVTAz58LNlzSgucuz5cmo/edit?gid=0#gid=0', '_blank')">Impressão de nomes</button>
+</div>
+
+<div class="temporizador">
+    <label>Temporizador de praticas <br><br> Minutos:</label>
+    <input type="number" id="tempoInput" min="1" value="10">
+    <button id="inicio" onclick="iniciarTemporizador()">Iniciar</button><br><br>
+    <button style="display: none;" id="botaoPausar" onclick="alternarPausarContinuar()">Pausar </button><br>
+    <button id="botaoParar" onclick="pararTemporizador()" style="display: none;">Parar</button>
+    <div id="contadorDisplay" style="margin-top:10px; font-size: 70px; font-weight: bold;"></div>
+</div>
+
+<iframe id="doc" src="https://docs.google.com/document/d/1Iu8_mUkyfSyUUV9BLDNmofqBEP49Q9tnFNX7JvwrFRo/preview"></iframe>
+
+<!-- Modal -->
+<div id="modal" class="modal-overlay">
+    <div class="modal-content">
+        Prática Acabou. Dê um feedback pros Missionários.<br>
+        <button onclick="fecharModal()">Voltar</button>
+    </div>
+</div>
+
+<!-- 🔊 Áudio Local -->
+<audio id="alarme" src="./alarme.mp3" preload="auto"></audio>
+
+<script>
+    function atualizarHora() {
+        const agora = new Date();
+        const horaFormatada = agora.toLocaleTimeString();
+        document.getElementById('hora').textContent = horaFormatada;
+    }
+    setInterval(atualizarHora, 1000);
+    atualizarHora();
+
+    let intervalo;
+    let tempoRestante;
+    let pausado = false;
+
+    function iniciarTemporizador() {
+        const input = document.getElementById('tempoInput');
+        const minutos = parseInt(input.value);
+
+        if (isNaN(minutos) || minutos <= 0) {
+            alert('Informe um tempo válido.');
+            return;
+        }
+
+        tempoRestante = minutos * 60;
+        clearInterval(intervalo);
+
+        pausado = false;
+        document.getElementById('botaoPausar').textContent = "Pausar";
+        document.getElementById('botaoParar').style.display = 'inline-block';
+        atualizarDisplay();
+
+        iniciarContagem();
+    }
+
+    function alternarPausarContinuar() {
+        const botaoPausar = document.getElementById('botaoPausar');
+
+        if (pausado) {
+            pausado = false;
+            botaoPausar.textContent = "Pausar";
+        } else {
+            pausado = true;
+            botaoPausar.textContent = "Continuar";
+        }
+    } 
+    document.getElementById("inicio").addEventListener("click", () => {
+      document.getElementById("botaoPausar").style.display = "flex";
+      document.getElementById("botaoPausar").style.margin= "auto auto";
+    })
+
+    function iniciarContagem() {
+        clearInterval(intervalo);
+
+        intervalo = setInterval(() => {
+            if (!pausado) {
+                tempoRestante--;
+                atualizarDisplay();
+                if (tempoRestante <= 0) {
+                    clearInterval(intervalo);
+                    document.getElementById('botaoParar').style.display = 'none';
+                    abrirModal();
+                }
+            }
+        }, 1000);
+    }
+
+    function pararTemporizador() {
+        clearInterval(intervalo);
+        tempoRestante = 0;
+        atualizarDisplay();
+        document.getElementById('botaoParar').style.display = 'none';
+    }
+
+    function atualizarDisplay() {
+        const minutos = Math.floor(tempoRestante / 60);
+        const segundos = tempoRestante % 60;
+        document.getElementById('contadorDisplay').textContent =
+            minutos.toString().padStart(2, '0') + ":" + segundos.toString().padStart(2, '0');
+    }
+
+    function abrirModal() {
+        document.getElementById('modal').style.display = 'flex';
+
+        const audio = document.getElementById('alarme');
+        audio.pause();
+        audio.currentTime = 0;
+        audio.play();
+    }
+
+    function fecharModal() {
+        document.getElementById('modal').style.display = 'none';
+
+        const audio = document.getElementById('alarme');
+        audio.pause();
+        audio.currentTime = 0;
+    }
+</script>
 
 </body>
 </html>
